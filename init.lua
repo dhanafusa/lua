@@ -36,6 +36,12 @@ require("lazy").setup({
     }
   }
   },
+  { "hrsh7th/nvim-cmp"},
+  { "hrsh7th/cmp-nvim-lsp"},
+  { "hrsh7th/cmp-buffer" },
+  { "hrsh7th/cmp-path" },
+  { "hrsh7th/cmp-cmdline" },
+  { "onsails/lspkind.nvim" },
   { "neovim/nvim-lspconfig" },
   { "nvim-telescope/telescope.nvim",tag = "0.1.6",
   dependencies = { "nvim-lua/plenary.nvim"}
@@ -55,6 +61,12 @@ require("lazy").setup({
   }, {})
 
 -- mason setting
+require("hrsh7th/nvim-cmp").setup()
+require("hrsh7th/cmp-nvim-lsp").setup()
+require("hrsh7th/cmp-buffer").setup()
+require("hrsh7th/cmp-path").setup()
+require("hrsh7th/cmp-cmdline").setup()
+require("onsails/lspkind.nvim").setup()
 require("mason").setup()
 require("mason-lspconfig").setup()
 require("mason-lspconfig").setup_handlers {
