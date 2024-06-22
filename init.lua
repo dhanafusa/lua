@@ -41,6 +41,8 @@ require("lazy").setup({
   { "hrsh7th/cmp-buffer" },
   { "hrsh7th/cmp-path" },
   { "hrsh7th/cmp-cmdline" },
+  { "L3MON4D3/LuaSnip" },
+  { "saadparwaiz1/cmp_luasnip" },
   { "onsails/lspkind.nvim" },
   { "neovim/nvim-lspconfig" },
   { "nvim-telescope/telescope.nvim",tag = "0.1.6",
@@ -61,12 +63,6 @@ require("lazy").setup({
   }, {})
 
 -- mason setting
-require("hrsh7th/nvim-cmp").setup()
-require("hrsh7th/cmp-nvim-lsp").setup()
-require("hrsh7th/cmp-buffer").setup()
-require("hrsh7th/cmp-path").setup()
-require("hrsh7th/cmp-cmdline").setup()
-require("onsails/lspkind.nvim").setup()
 require("mason").setup()
 require("mason-lspconfig").setup()
 require("mason-lspconfig").setup_handlers {
@@ -75,7 +71,39 @@ require("mason-lspconfig").setup_handlers {
   end,
 }
 
---Comment setting
+-- cmp setting
+--require("nvim-cmp").setup()
+--require("cmp-nvim-lsp").setup()
+--require("cmp-buffer").setup()
+--require("cmp-path").setup()
+--require("cmp-cmdline").setup()
+--require("lspkind.nvim").setup()
+
+local cmp = require("cmp")
+cmp.setup({
+  snippet = {
+    expand = function(args)
+      require("luasnip").lsp_expand(args.body)
+    end,
+  },
+  mapping = cmp.mapping.preset.insert({
+    ["<C-p>"] = cmp.mapping.select_prev_item(),
+    ["<Tab>"] = cmp.mapping.select_next_item(),
+    ["<C-d>"] = cmp.mapping.scroll_docs(-4),
+    ["<C-f>"] = cmp.mapping.scroll_docs(4),
+    ["<C-Space>"] = cmp.mapping.complete(),
+    ["<C-e>"] = cmp.mapping.close(),
+    ["<CR>"] = cmp.mapping.confirm({ select = true }),
+  }),
+  sources = cmp.config.sources({
+    { name = "nvim_lsp" },
+    { name = "luasnip" },
+  }, {
+    { name = "buffer" },
+  })
+}) 
+
+--Comment setting 
 require('Comment').setup()
 
 --telescopre setting
