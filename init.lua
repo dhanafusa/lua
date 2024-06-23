@@ -50,6 +50,8 @@ require("lazy").setup({
   },
   { "williamboman/mason.nvim" },
   { "williamboman/mason-lspconfig.nvim" },
+  { "jose-elias-alvarez/null-ls.nvim" },
+  { "jayp0521/mason-null-ls.nvim" },
   {
     "nvim-neo-tree/neo-tree.nvim",
     branch = "v3.x",
@@ -71,14 +73,40 @@ require("mason-lspconfig").setup_handlers {
   end,
 }
 
--- cmp setting
---require("nvim-cmp").setup()
---require("cmp-nvim-lsp").setup()
---require("cmp-buffer").setup()
---require("cmp-path").setup()
---require("cmp-cmdline").setup()
---require("lspkind.nvim").setup()
+-- Mason Null-lsの設定
+require("mason-null-ls").setup({
+  ensure_installed = { "prettier"},
+  automatic_setup = true,
+})
 
+-- Null-lsの設定
+local null_ls = require("null-ls")
+local formatting = null_ls.builtins.formatting
+local diagnostics = null_ls.builtins.diagnostics
+
+null_ls.setup({
+  sources = {
+    formatting.prettier.with({
+      filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "yaml", "markdown", "markdown.mdx", "graphql", "handlebars" },
+    }),
+    diagnostics.eslint_d,
+  },
+  on_attach = function(client, bufnr)
+    if client.supports_method("textDocument/formatting") then
+      vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        group = augroup,
+        buffer = bufnr,
+        callback = function()
+          vim.lsp.buf.format({ bufnr = bufnr })
+        end,
+      })
+    end
+  end,
+})
+
+
+-- cmp setting
 local cmp = require("cmp")
 cmp.setup({
   snippet = {
